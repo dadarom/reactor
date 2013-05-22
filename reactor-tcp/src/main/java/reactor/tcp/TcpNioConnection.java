@@ -16,31 +16,26 @@
 
 package reactor.tcp;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.CancelledKeyException;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import reactor.Fn;
 import reactor.core.Reactor;
 import reactor.fn.Consumer;
 import reactor.fn.Event;
-import reactor.util.Assert;
 import reactor.tcp.codec.Codec;
 import reactor.tcp.codec.StreamingCodec;
 import reactor.tcp.data.Buffers;
+import reactor.util.Assert;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A TcpConnection that uses and underlying {@link SocketChannel}.
  *
  * @author Gary Russell
- *
  */
 public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 
@@ -62,13 +57,13 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 
 	/**
 	 * Constructs a TcpNetConnection for the SocketChannel.
+	 *
 	 * @param socketChannel the socketChannel
-	 * @param server if true this connection was created as
-	 * a result of an incoming request.
+	 * @param server        if true this connection was created as a result of an incoming request.
 	 */
 	public TcpNioConnection(SocketChannel socketChannel, boolean server, boolean lookupHost,
-			ConnectionFactorySupport<T> connectionFactory, Codec<T> codec) throws IOException {
-			super(socketChannel.socket(), server, lookupHost, connectionFactory);
+													ConnectionFactorySupport<T> connectionFactory, Codec<T> codec) throws IOException {
+		super(socketChannel.socket(), server, lookupHost, connectionFactory);
 		this.socketChannel = socketChannel;
 		this.codec = codec;
 
@@ -78,7 +73,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 		}
 		this.ioSelector = connectionFactory.getIoSelector();
 		this.connectionReactor = new Reactor();
-		this.connectionReactor.on(ConnectionFactorySupport.READ, new Consumer<Event<SelectionKey>> () {
+		this.connectionReactor.on(ConnectionFactorySupport.READ, new Consumer<Event<SelectionKey>>() {
 
 			@Override
 			public void accept(Event<SelectionKey> keyEvent) {
@@ -88,7 +83,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 				handleReadSelection(keyEvent.getData());
 			}
 		});
-		this.connectionReactor.on(ConnectionFactorySupport.WRITE, new Consumer<Event<SelectionKey>> () {
+		this.connectionReactor.on(ConnectionFactorySupport.WRITE, new Consumer<Event<SelectionKey>>() {
 
 			@Override
 			public void accept(Event<SelectionKey> keyEvent) {
@@ -131,7 +126,8 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 	private void doClose() {
 		try {
 			this.socketChannel.close();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		super.close();
 	}
 
@@ -145,15 +141,13 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 			this.setLastRead(System.currentTimeMillis());
 			try {
 				this.readPacket();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				if (this.isOpen()) {
 					logger.error("Exception on read " +
-							this.getConnectionId() + " " +
-							e.getMessage());
+													 this.getConnectionId() + " " +
+													 e.getMessage());
 					this.close();
-				}
-				else {
+				} else {
 					logger.debug("Connection closed");
 				}
 			}
@@ -161,8 +155,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 				key.interestOps(key.interestOps() | SelectionKey.OP_READ);
 				ioSelector.wakeup();
 			}
-		}
-		catch (CancelledKeyException e) {
+		} catch (CancelledKeyException e) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("key cancelled");
 			}
@@ -172,8 +165,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 	protected void handleWriteSelection(final Selector selector, final SelectionKey key) {
 		try {
 			this.doWrite(this.getBuffersToWrite());
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			logger.error("Exception on write", e);
 			this.close();
 		}
@@ -208,13 +200,18 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 			public void write(int b) throws IOException {
 				buffer.put((byte) b);
 				if (buffer.position() == buffer.limit()) {
-					buffer.flip();
-					Buffers buffers = new Buffers();
-					buffers.add(buffer);
-					outbound.add(buffers);
-					buffer = allocate(2048);
-					doWrite(outbound);
+					flush();
 				}
+			}
+
+			@Override
+			public void flush() throws IOException {
+				buffer.flip();
+				Buffers buffers = new Buffers();
+				buffers.add(buffer);
+				outbound.add(buffers);
+				buffer = allocate(2048);
+				doWrite(outbound);
 			}
 		});
 	}
@@ -223,8 +220,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 		if (this.outbound.size() > 0) {
 			try {
 				this.doWrite(this.outbound);
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				throw new RuntimeException(e);
 			}
@@ -238,16 +234,14 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 			Buffers buffers = buffersToWrite.poll();
 			if (buffers == null) {
 				workToDo = false;
-			}
-			else {
+			} else {
 				int consumedBuffers = 0;
 				int bytesWritten = 0;
 				for (ByteBuffer buffer : buffers) {
 					try {
 						bytesWritten += buffer.remaining();
 						this.socketChannel.write(buffer);
-					}
-					catch (IOException e) {
+					} catch (IOException e) {
 						exceptionToThrow = e;
 						workToDo = false;
 					}
@@ -256,8 +250,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 						workToDo = false;
 						// writes are blocked, need to reselect.
 						this.getConnectionFactory().writeOpNeeded(this);
-					}
-					else {
+					} else {
 						consumedBuffers++;
 					}
 				}
@@ -278,8 +271,8 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 	}
 
 	/**
-	 * Allocates a ByteBuffer of the requested length using normal or
-	 * direct buffers, depending on the usingDirectBuffers field.
+	 * Allocates a ByteBuffer of the requested length using normal or direct buffers, depending on the usingDirectBuffers
+	 * field.
 	 */
 	protected ByteBuffer allocate(int length) {
 		//TODO: cache if using Direct Buffers - not good to churn
@@ -294,6 +287,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 
 	/**
 	 * TODO: Return to cache if {@link #usingDirectBuffers}.
+	 *
 	 * @param buffers
 	 */
 	protected void deallocate(Buffers buffers) {
@@ -322,8 +316,7 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 				logger.debug("Read " + rawBuffer.limit() + " into raw buffer");
 			}
 			this.fireNewDataEvent(rawBuffer);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			this.publishConnectionExceptionEvent(e);
 			throw e;
 		}
@@ -347,24 +340,22 @@ public class TcpNioConnection<T> extends TcpConnectionSupport<T> {
 		}
 		try {
 			doRead();
-		}
-		catch (ClosedChannelException cce) {
+		} catch (ClosedChannelException cce) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(this.getConnectionId() + " Channel is closed");
 			}
 			this.closeConnection();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("Exception on Read " +
-					     this.getConnectionId() + " " +
-					     e.getMessage(), e);
+											 this.getConnectionId() + " " +
+											 e.getMessage(), e);
 			this.closeConnection();
 		}
 	}
 
 	/**
-	 * If true, connection will attempt to use direct buffers where
-	 * possible.
+	 * If true, connection will attempt to use direct buffers where possible.
+	 *
 	 * @param usingDirectBuffers
 	 */
 	public void setUsingDirectBuffers(boolean usingDirectBuffers) {
