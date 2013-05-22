@@ -16,8 +16,11 @@
 
 package reactor.io;
 
+import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 
 /**
  * @author Jon Brisbin <jon@jbrisbin.com>
@@ -243,6 +246,46 @@ public class Buffer implements Comparable<Buffer> {
 
 	public ByteBuffer asByteBuffer() {
 		return buffer;
+	}
+
+	public ReadableByteChannel asReadableByteChannel() {
+		return new ReadableByteChannel() {
+			@Override
+			public int read(ByteBuffer dst) throws IOException {
+				int start = buffer.position();
+				dst.put(buffer);
+				return buffer.position() - start;
+			}
+
+			@Override
+			public boolean isOpen() {
+				return buffer.hasRemaining();
+			}
+
+			@Override
+			public void close() throws IOException {
+			}
+		};
+	}
+
+	public WritableByteChannel asWritableByteChannel() {
+		return new WritableByteChannel() {
+			@Override
+			public int write(ByteBuffer src) throws IOException {
+				int start = position();
+				append(src);
+				return position() - start;
+			}
+
+			@Override
+			public boolean isOpen() {
+				return isDynamic();
+			}
+
+			@Override
+			public void close() throws IOException {
+			}
+		};
 	}
 
 	@Override

@@ -199,6 +199,6 @@ project('reactor-http') {
 		compile project(':reactor-tcp')
 
 		// HTTP
-		compile "org.apache.httpcomponents:httpcomponents-core:$httpComponentsVersion"
+		compile "org.apache.httpcomponents:httpcore-nio:$httpComponentsVersion"
 	}
 }
