@@ -39,7 +39,7 @@ import reactor.core.dynamic.reflect.SimpleMethodNotificationKeyResolver;
 import reactor.core.dynamic.reflect.SimpleMethodSelectorResolver;
 import reactor.fn.Consumer;
 import reactor.fn.ConsumerInvoker;
-import reactor.fn.ConverterAwareConsumerInvoker;
+import reactor.fn.support.ConverterAwareConsumerInvoker;
 import reactor.fn.Event;
 import reactor.fn.Function;
 import reactor.fn.Registration;
