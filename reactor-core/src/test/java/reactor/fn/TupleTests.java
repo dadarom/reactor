@@ -51,6 +51,7 @@ public class TupleTests {
 		assertThat("Tuple3 is also a Tuple1", Tuple1.class.isInstance(t3));
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void tupleProvidesVirtuallyUnlimitedSize() {
 		TupleN tn = Tuple.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
