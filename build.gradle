@@ -29,6 +29,7 @@ ext {
 	// Libraries
 	disruptorVersion = '3.0.1'
 	springVersion = '3.2.2.RELEASE'
+	httpComponentsVersion = '4.3-beta2'
 
 	// Testing
 	mockitoVersion = '1.9.5'
@@ -189,5 +190,15 @@ project('reactor-tcp') {
 	dependencies {
 		compile project(':reactor-core')
 		testCompile "org.mockito:mockito-all:$mockitoVersion"
+	}
+}
+
+project('reactor-http') {
+	description = 'Reactor HTTP components'
+	dependencies {
+		compile project(':reactor-tcp')
+
+		// HTTP
+		compile "org.apache.httpcomponents:httpcomponents-core:$httpComponentsVersion"
 	}
 }
