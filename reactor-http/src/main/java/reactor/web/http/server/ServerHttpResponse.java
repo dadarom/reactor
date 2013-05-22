@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2002-2012 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,38 @@
  * limitations under the License.
  */
 
-package reactor.web.http;
+package reactor.web.http.server;
 
-import reactor.core.Composable;
+import reactor.web.http.HttpOutputMessage;
+import reactor.web.http.HttpStatus;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
- * Represents an HTTP output message, consisting of {@linkplain #getHeaders() headers} and a writable {@linkplain
- * #getBody() body}.
- * <p/>
- * <p>Typically implemented by an HTTP request on the client-side, or a response on the server-side.
+ * Represents a server-side HTTP response.
  *
  * @author Arjen Poutsma
  * @author Jon Brisbin
  */
-public interface HttpOutputMessage<T> extends HttpMessage {
+public interface ServerHttpResponse<T> extends HttpOutputMessage<T>, Closeable {
 
 	/**
-	 * Return the body of the message as a {@link Composable}.
+	 * Set the HTTP status code of the response.
 	 *
-	 * @return the body as a {@link Composable}
+	 * @param status the HTTP status as an HttpStatus enum value
 	 */
-	Composable<T> getBody();
+	void setStatusCode(HttpStatus status);
+
+	/**
+	 * TODO
+	 */
+	void flush() throws IOException;
+
+	/**
+	 * Close this response, freeing any resources created.
+	 */
+	@Override
+	void close();
 
 }

@@ -22,7 +22,6 @@ import reactor.util.ObjectUtils;
 /**
  * Extension of {@link HttpEntity} that adds a {@link HttpStatus} status code.
  *
- * <p>Returned by {@link org.springframework.web.client.RestTemplate#getForEntity}:
  * <pre class="code">
  * ResponseEntity&lt;String&gt; entity = template.getForEntity("http://example.com", String.class);
  * String body = entity.getBody();
@@ -40,13 +39,12 @@ import reactor.util.ObjectUtils;
  * </pre>
  *
  * @author Arjen Poutsma
- * @since 3.0.2
+ * @author Jon Brisbin
  * @see #getStatusCode()
  */
 public class ResponseEntity<T> extends HttpEntity<T> {
 
 	private final HttpStatus statusCode;
-
 
 	/**
 	 * Create a new {@code ResponseEntity} with the given status code, and no body nor headers.

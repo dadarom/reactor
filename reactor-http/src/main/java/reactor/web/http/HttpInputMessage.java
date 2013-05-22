@@ -16,25 +16,24 @@
 
 package reactor.web.http;
 
-import java.io.IOException;
-import java.io.InputStream;
+import reactor.core.Composable;
 
 /**
- * Represents an HTTP input message, consisting of {@linkplain #getHeaders() headers}
- * and a readable {@linkplain #getBody() body}.
- *
+ * Represents an HTTP input message, consisting of {@linkplain #getHeaders() headers} and a readable {@linkplain
+ * #getBody() body}.
+ * <p/>
  * <p>Typically implemented by an HTTP request on the server-side, or a response on the client-side.
  *
  * @author Arjen Poutsma
- * @since 3.0
+ * @author Jon Brisbin
  */
-public interface HttpInputMessage extends HttpMessage {
+public interface HttpInputMessage<T> extends HttpMessage {
 
 	/**
-	 * Return the body of the message as an input stream.
-	 * @return the input stream body
-	 * @throws IOException in case of I/O Errors
+	 * Return the body of the message as a {@link Composable}.
+	 *
+	 * @return the body as a {@link Composable}
 	 */
-	InputStream getBody() throws IOException;
+	Composable<T> getBody();
 
 }

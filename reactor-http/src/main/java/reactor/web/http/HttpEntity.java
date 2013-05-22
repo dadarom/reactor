@@ -22,7 +22,7 @@ import reactor.util.ObjectUtils;
 /**
  * Represents an HTTP request or response entity, consisting of headers and body.
  *
- * <p>Typically used in combination with the {@link org.springframework.web.client.RestTemplate RestTemplate}, like so:
+ * <p>Typically used like so:
  * <pre class="code">
  * HttpHeaders headers = new HttpHeaders();
  * headers.setContentType(MediaType.TEXT_PLAIN);
@@ -46,11 +46,11 @@ import reactor.util.ObjectUtils;
  * </pre>
  *
  * @author Arjen Poutsma
- * @since 3.0.2
- * @see org.springframework.web.client.RestTemplate
+ * @author Jon Brisbin
  * @see #getBody()
  * @see #getHeaders()
  */
+@SuppressWarnings("rawtypes")
 public class HttpEntity<T> {
 
 	/**
@@ -58,11 +58,8 @@ public class HttpEntity<T> {
 	 */
 	public static final HttpEntity EMPTY = new HttpEntity();
 
-
 	private final HttpHeaders headers;
-
 	private final T body;
-
 
 	/**
 	 * Create a new, empty {@code HttpEntity}.
@@ -100,7 +97,6 @@ public class HttpEntity<T> {
 		}
 		this.headers = HttpHeaders.readOnlyHttpHeaders(tempHeaders);
 	}
-
 
 	/**
 	 * Returns the headers of this entity.
