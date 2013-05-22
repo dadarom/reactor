@@ -5,6 +5,7 @@ import org.apache.http.config.MessageConstraints;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.DefaultHttpRequestFactory;
 import org.apache.http.impl.nio.codecs.DefaultHttpRequestParser;
 import org.apache.http.impl.nio.codecs.DefaultHttpResponseWriter;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -199,6 +201,7 @@ public class HttpCodec implements StreamingCodec<Tuple2<ServerHttpRequest<Buffer
 		for (Map.Entry<String, String> entry : responseEntity.getHeaders().toSingleValueMap().entrySet()) {
 			httpResponse.addHeader(new BasicHeader(entry.getKey(), entry.getValue()));
 		}
+		httpResponse.setHeader("Server", "Reactor/1.0");
 
 		try {
 			Object body = responseEntity.getBody();
@@ -206,33 +209,34 @@ public class HttpCodec implements StreamingCodec<Tuple2<ServerHttpRequest<Buffer
 				// TODO: body isn't ready yet
 			} else if (null != body) {
 				ContentType ct = ContentType.create(null != contentType ? contentType.toString() : "text/plain");
-				HttpEntity entity = null;
+				HttpEntity entity;
 				if (String.class.isInstance(body)) {
-					entity = new ByteArrayEntity(((String) body).getBytes(), ct);
+					entity = new StringEntity(((String) body), ct);
 				} else if (byte[].class.isInstance(body)) {
 					entity = new ByteArrayEntity((byte[]) body, ct);
 				} else if (InputStream.class.isInstance(body)) {
 					BasicHttpEntity bhe = new BasicHttpEntity();
-					bhe.setContentType(contentType.toString());
+					bhe.setContentType(ct.toString());
 					bhe.setContent((InputStream) body);
 					bhe.setContentLength(responseEntity.getHeaders().getContentLength());
+					entity = bhe;
 				} else {
 					throw new IllegalArgumentException(body + " not supported as output type");
 				}
 
-				if (null != entity) {
-					httpResponse.setEntity(entity);
-				}
+				httpResponse.setEntity(entity);
 
 				httpResponseWriter.write(httpResponse);
 
-				Buffer buff = new Buffer();
-				outputBuffer.flush(buff.asWritableByteChannel());
-				buff.flip();
-				if (LOG.isTraceEnabled()) {
-					LOG.trace("sending: {}", buff.asString());
-				}
-				stream.write(buff.asBytes());
+//				Buffer buff = new Buffer();
+//				buff.flip();
+//				if (LOG.isTraceEnabled()) {
+//					LOG.trace("sending: {}", buff.asString());
+//				}
+//				stream.write(buff.asBytes());
+
+				outputBuffer.flush(Channels.newChannel(stream));
+				//entity.writeTo(stream);
 				stream.flush();
 
 				reset();

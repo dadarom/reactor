@@ -21,44 +21,23 @@ import reactor.util.ObjectUtils;
 
 /**
  * Represents an HTTP request or response entity, consisting of headers and body.
- *
- * <p>Typically used like so:
- * <pre class="code">
- * HttpHeaders headers = new HttpHeaders();
- * headers.setContentType(MediaType.TEXT_PLAIN);
- * HttpEntity&lt;String&gt; entity = new HttpEntity&lt;String&gt;(helloWorld, headers);
- * URI location = template.postForLocation("http://example.com", entity);
- * </pre>
- * or
- * <pre class="code">
- * HttpEntity&lt;String&gt; entity = template.getForEntity("http://example.com", String.class);
- * String body = entity.getBody();
- * MediaType contentType = entity.getHeaders().getContentType();
- * </pre>
- * Can also be used in Spring MVC, as a return value from a @Controller method:
- * <pre class="code">
- * &#64;RequestMapping("/handle")
- * public HttpEntity&lt;String&gt; handle() {
- *   HttpHeaders responseHeaders = new HttpHeaders();
- *   responseHeaders.set("MyResponseHeader", "MyValue");
- *   return new HttpEntity&lt;String&gt;("Hello World", responseHeaders);
- * }
- * </pre>
+ * <p/>
+ * <p>Typically used like so: <pre class="code"> HttpHeaders headers = new HttpHeaders();
+ * headers.setContentType(MediaType.TEXT_PLAIN); HttpEntity&lt;String&gt; entity = new
+ * HttpEntity&lt;String&gt;(helloWorld, headers); URI location = template.postForLocation("http://example.com", entity);
+ * </pre> or <pre class="code"> HttpEntity&lt;String&gt; entity = template.getForEntity("http://example.com",
+ * String.class); String body = entity.getBody(); MediaType contentType = entity.getHeaders().getContentType(); </pre>
+ * Can also be used in Spring MVC, as a return value from a @Controller method: <pre class="code">
+ * &#64;RequestMapping("/handle") public HttpEntity&lt;String&gt; handle() { HttpHeaders responseHeaders = new
+ * HttpHeaders(); responseHeaders.set("MyResponseHeader", "MyValue"); return new HttpEntity&lt;String&gt;("Hello World",
+ * responseHeaders); } </pre>
  *
  * @author Arjen Poutsma
-<<<<<<< HEAD
  * @author Jon Brisbin
  * @see #getBody()
  * @see #getHeaders()
  */
 @SuppressWarnings("rawtypes")
-=======
- * @since 3.0.2
- * @see org.springframework.web.client.RestTemplate
- * @see #getBody()
- * @see #getHeaders()
- */
->>>>>>> add basic abstractions for doing HTTP
 public class HttpEntity<T> {
 
 	/**
@@ -66,18 +45,9 @@ public class HttpEntity<T> {
 	 */
 	public static final HttpEntity EMPTY = new HttpEntity();
 
-<<<<<<< HEAD
 	private final HttpHeaders headers;
-	private final T body;
+	private final T           body;
 
-=======
-
-	private final HttpHeaders headers;
-
-	private final T body;
-
-
->>>>>>> add basic abstractions for doing HTTP
 	/**
 	 * Create a new, empty {@code HttpEntity}.
 	 */
@@ -87,6 +57,7 @@ public class HttpEntity<T> {
 
 	/**
 	 * Create a new {@code HttpEntity} with the given body and no headers.
+	 *
 	 * @param body the entity body
 	 */
 	public HttpEntity(T body) {
@@ -95,6 +66,7 @@ public class HttpEntity<T> {
 
 	/**
 	 * Create a new {@code HttpEntity} with the given headers and no body.
+	 *
 	 * @param headers the entity headers
 	 */
 	public HttpEntity(MultiValueMap<String, String> headers) {
@@ -103,7 +75,8 @@ public class HttpEntity<T> {
 
 	/**
 	 * Create a new {@code HttpEntity} with the given body and headers.
-	 * @param body the entity body
+	 *
+	 * @param body    the entity body
 	 * @param headers the entity headers
 	 */
 	public HttpEntity(T body, MultiValueMap<String, String> headers) {
@@ -115,10 +88,6 @@ public class HttpEntity<T> {
 		this.headers = HttpHeaders.readOnlyHttpHeaders(tempHeaders);
 	}
 
-<<<<<<< HEAD
-=======
-
->>>>>>> add basic abstractions for doing HTTP
 	/**
 	 * Returns the headers of this entity.
 	 */
