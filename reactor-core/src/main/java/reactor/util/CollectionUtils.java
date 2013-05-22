@@ -39,6 +39,7 @@ import java.util.Set;
  * @author Arjen Poutsma
  * @since 1.1.3
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public abstract class CollectionUtils {
 
 	/**
@@ -79,7 +80,6 @@ public abstract class CollectionUtils {
 	 * @param array the array to merge (may be {@code null})
 	 * @param collection the target Collection to merge the array into
 	 */
-	@SuppressWarnings("unchecked")
 	public static void mergeArrayIntoCollection(Object array, Collection collection) {
 		if (collection == null) {
 			throw new IllegalArgumentException("Collection must not be null");
@@ -98,7 +98,6 @@ public abstract class CollectionUtils {
 	 * @param props the Properties instance to merge (may be {@code null})
 	 * @param map the target Map to merge the properties into
 	 */
-	@SuppressWarnings("unchecked")
 	public static void mergePropertiesIntoMap(Properties props, Map map) {
 		if (map == null) {
 			throw new IllegalArgumentException("Map must not be null");
