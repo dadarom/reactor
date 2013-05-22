@@ -49,7 +49,7 @@ public class DefaultTcpNioSSLConnectionConfigurer implements TcpNioConnectionCon
 	/**
 	 * Creates a {@link TcpNioSSLConnection}.
 	 */
-	public <T> TcpNioConnection<T> createNewConnection(SocketChannel socketChannel, boolean server, boolean lookupHost, ConnectionFactorySupport<T> connectionFactory, Supplier<Codec<T>> codecSupplier) throws Exception {
+	public <T> TcpNioConnection<T> createNewConnection(SocketChannel socketChannel, boolean server, boolean lookupHost, ConnectionFactorySupport<T> connectionFactory, Supplier<? extends Codec<T>> codecSupplier) throws Exception {
 		SSLEngine sslEngine = this.sslContext.createSSLEngine();
 		TcpNioSSLConnection<T> tcpNioSSLConnection = new TcpNioSSLConnection<T>(socketChannel, server, lookupHost, connectionFactory, sslEngine, codecSupplier.get());
 		tcpNioSSLConnection.init();

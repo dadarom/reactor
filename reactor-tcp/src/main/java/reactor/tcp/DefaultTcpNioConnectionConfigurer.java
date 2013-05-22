@@ -30,7 +30,7 @@ import reactor.tcp.codec.Codec;
 public class DefaultTcpNioConnectionConfigurer implements TcpNioConnectionConfigurer {
 
 	public <T> TcpNioConnection<T> createNewConnection(SocketChannel socketChannel, boolean server, boolean lookupHost,
-			 ConnectionFactorySupport<T> connectionFactory, Supplier<Codec<T>> codecSupplier) throws Exception {
+			 ConnectionFactorySupport<T> connectionFactory, Supplier<? extends Codec<T>> codecSupplier) throws Exception {
 		return new TcpNioConnection<T>(socketChannel, server, lookupHost, connectionFactory, codecSupplier.get());
 	}
 }

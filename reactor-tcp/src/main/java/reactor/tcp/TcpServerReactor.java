@@ -55,7 +55,7 @@ public class TcpServerReactor<T> extends Reactor implements Lifecycle<TcpServerR
 	 * @param port The port to listen on
 	 * @param codecSupplier The codec to use to decode incoming data
 	 */
-	public TcpServerReactor(int port, Supplier<Codec<T>> codecSupplier) {
+	public TcpServerReactor(int port, Supplier<? extends Codec<T>> codecSupplier) {
 		server = new TcpNioServerConnectionFactory<T>(port, codecSupplier);
 		server.registerListener(new ConnectionAwareTcpListener<T>() {
 			@Override

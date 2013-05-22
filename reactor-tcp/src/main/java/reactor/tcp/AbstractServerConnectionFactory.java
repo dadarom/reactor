@@ -49,7 +49,7 @@ public abstract class AbstractServerConnectionFactory<T>
 	 *
 	 * @param port
 	 */
-	public AbstractServerConnectionFactory(int port, Supplier<Codec<T>> codecSupplier) {
+	public AbstractServerConnectionFactory(int port, Supplier<? extends Codec<T>> codecSupplier) {
 		super(port, codecSupplier);
 	}
 

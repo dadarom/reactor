@@ -69,7 +69,7 @@ public abstract class ConnectionFactorySupport<T> implements ConnectionFactory {
 
 	private final Reactor ioReactor = new Reactor();
 
-	private final Supplier<Codec<T>> codecSupplier;
+	private final Supplier<? extends Codec<T>> codecSupplier;
 
 	private volatile Selector ioSelector;
 
@@ -121,12 +121,12 @@ public abstract class ConnectionFactorySupport<T> implements ConnectionFactory {
 
 	private final BlockingQueue<TcpNioConnection<T>> writeOpsNeeded = new LinkedBlockingQueue<TcpNioConnection<T>>();
 
-	public ConnectionFactorySupport(int port, Supplier<Codec<T>> codecSupplier) {
+	public ConnectionFactorySupport(int port, Supplier<? extends Codec<T>> codecSupplier) {
 		this.port = port;
 		this.codecSupplier = codecSupplier;
 	}
 
-	public ConnectionFactorySupport(String host, int port, Supplier<Codec<T>> codecSupplier) {
+	public ConnectionFactorySupport(String host, int port, Supplier<? extends Codec<T>> codecSupplier) {
 		Assert.notNull(host, "host must not be null");
 		this.host = host;
 		this.port = port;
@@ -323,7 +323,7 @@ public abstract class ConnectionFactorySupport<T> implements ConnectionFactory {
 		this.factoryName = factoryName;
 	}
 
-	protected Supplier<Codec<T>> getCodecSupplier() {
+	protected Supplier<? extends Codec<T>> getCodecSupplier() {
 		return this.codecSupplier;
 	}
 

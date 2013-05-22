@@ -43,5 +43,5 @@ public interface TcpNioConnectionConfigurer {
 	 * @throws Exception if connection creation fails
 	 */
 	<T> TcpNioConnection<T> createNewConnection(SocketChannel socketChannel,
-			boolean server, boolean lookupHost, ConnectionFactorySupport<T> connectionFactory, Supplier<Codec<T>> codecSupplier) throws Exception;
+			boolean server, boolean lookupHost, ConnectionFactorySupport<T> connectionFactory, Supplier<? extends Codec<T>> codecSupplier) throws Exception;
 }

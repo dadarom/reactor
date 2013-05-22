@@ -50,7 +50,7 @@ public class TcpNioServerConnectionFactory<T> extends AbstractServerConnectionFa
 	 *
 	 * @param port The port.
 	 */
-	public TcpNioServerConnectionFactory(int port, Supplier<Codec<T>> codecSupplier) {
+	public TcpNioServerConnectionFactory(int port, Supplier<? extends Codec<T>> codecSupplier) {
 		super(port, codecSupplier);
 	}
 
