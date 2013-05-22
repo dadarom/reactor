@@ -39,13 +39,21 @@ import reactor.util.ObjectUtils;
  * </pre>
  *
  * @author Arjen Poutsma
+<<<<<<< HEAD
  * @author Jon Brisbin
+=======
+ * @since 3.0.2
+>>>>>>> add basic abstractions for doing HTTP
  * @see #getStatusCode()
  */
 public class ResponseEntity<T> extends HttpEntity<T> {
 
 	private final HttpStatus statusCode;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> add basic abstractions for doing HTTP
 	/**
 	 * Create a new {@code ResponseEntity} with the given status code, and no body nor headers.
 	 * @param statusCode the status code

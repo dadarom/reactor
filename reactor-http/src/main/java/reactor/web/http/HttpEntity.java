@@ -46,11 +46,19 @@ import reactor.util.ObjectUtils;
  * </pre>
  *
  * @author Arjen Poutsma
+<<<<<<< HEAD
  * @author Jon Brisbin
  * @see #getBody()
  * @see #getHeaders()
  */
 @SuppressWarnings("rawtypes")
+=======
+ * @since 3.0.2
+ * @see org.springframework.web.client.RestTemplate
+ * @see #getBody()
+ * @see #getHeaders()
+ */
+>>>>>>> add basic abstractions for doing HTTP
 public class HttpEntity<T> {
 
 	/**
@@ -58,9 +66,18 @@ public class HttpEntity<T> {
 	 */
 	public static final HttpEntity EMPTY = new HttpEntity();
 
+<<<<<<< HEAD
 	private final HttpHeaders headers;
 	private final T body;
 
+=======
+
+	private final HttpHeaders headers;
+
+	private final T body;
+
+
+>>>>>>> add basic abstractions for doing HTTP
 	/**
 	 * Create a new, empty {@code HttpEntity}.
 	 */
@@ -98,6 +115,10 @@ public class HttpEntity<T> {
 		this.headers = HttpHeaders.readOnlyHttpHeaders(tempHeaders);
 	}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> add basic abstractions for doing HTTP
 	/**
 	 * Returns the headers of this entity.
 	 */
